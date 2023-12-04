@@ -1,0 +1,25 @@
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 00:28:05.203	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/gorm.go:60	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 00:28:05.205	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/redis.go:23	redis connect ping response:	{"pong": "PONG"}
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 00:28:05.207	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/router.go:35	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 00:28:05.215	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/router.go:79	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 00:28:05.224	[34minfo[0m	D:/学习/GVA/GOVA/server/core/server.go:41	server run success on 	{"address": ":8888"}
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 15:20:22.380	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/gorm.go:60	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 15:20:22.383	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/redis.go:23	redis connect ping response:	{"pong": "PONG"}
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 15:20:22.385	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/router.go:35	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 15:20:22.392	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/router.go:79	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 15:20:22.396	[34minfo[0m	D:/学习/GVA/GOVA/server/core/server.go:41	server run success on 	{"address": ":8888"}
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 18:18:00.967	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/gorm.go:60	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 18:18:00.969	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/redis.go:23	redis connect ping response:	{"pong": "PONG"}
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 18:18:00.972	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/router.go:35	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 18:18:00.979	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/router.go:79	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 18:18:00.981	[34minfo[0m	D:/学习/GVA/GOVA/server/core/server.go:41	server run success on 	{"address": ":8888"}
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 19:16:41.993	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/gorm.go:60	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 19:16:41.994	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/redis.go:23	redis connect ping response:	{"pong": "PONG"}
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 19:16:41.996	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/router.go:35	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 19:16:42.003	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/router.go:79	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 19:16:42.005	[34minfo[0m	D:/学习/GVA/GOVA/server/core/server.go:41	server run success on 	{"address": ":8888"}
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 19:33:21.555	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/gorm.go:60	register table success
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 19:33:21.556	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/redis.go:23	redis connect ping response:	{"pong": "PONG"}
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 19:33:21.558	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/router.go:35	register swagger handler
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 19:33:21.567	[34minfo[0m	D:/学习/GVA/GOVA/server/initialize/router.go:79	router register success
+[github.com/flipped-aurora/gin-vue-admin/server]2023/12/03 - 19:33:21.572	[34minfo[0m	D:/学习/GVA/GOVA/server/core/server.go:41	server run success on 	{"address": ":8888"}
