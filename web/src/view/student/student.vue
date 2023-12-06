@@ -33,7 +33,7 @@
                   <el-icon class="el-input__icon"><search /></el-icon>
                 </template>
               </el-input>
-     
+
         </el-form-item>
 
         <el-form-item>
@@ -47,9 +47,9 @@
                   <el-icon class="el-input__icon"><search /></el-icon>
                 </template>
               </el-input>
-     
+
         </el-form-item>
-       
+
 
         <el-form-item>
           <el-button type="primary" icon="search" @click="handleQueryName">查询2</el-button>
@@ -70,7 +70,7 @@
       :key="item.value"
       :label="item.label"
       :value="item.value"
-            />
+    />
         </el-select>
        </el-form-item>
       </el-form>
@@ -78,8 +78,7 @@
 
       <!-- <div class="my-search">
         <el-form :model="searchInfo">
-         
-       
+
         <el-form-item>
           <el-input class="query-input"
            placeholder="Type something"
@@ -91,14 +90,14 @@
                   <el-icon class="el-input__icon"><search /></el-icon>
                 </template>
               </el-input>
-     
+
         </el-form-item>
           </el-form>
 
         <el-form-item>
           <el-button type="primary" icon="search" @click="handleQueryName">查询2</el-button>
         </el-form-item>
-     
+
       </div> -->
 
     <div class="gva-table-box">
@@ -129,8 +128,9 @@
         <el-table
         stripe =true
         border =true
-        size = large
-        empty-text
+        size = 'large'
+        empty-text='No data'
+        highlight-current-row
         ref="multipleTable"
         style="width: 100%"
         tooltip-effect="dark"
@@ -143,13 +143,12 @@
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="学号" prop="sno" width="120" />
+        <el-table-column align="left" label="学号" prop="sno" width="140" />
         <el-table-column align="left" label="姓名" prop="sname" width="120" />
         <el-table-column align="left" label="性别" prop="ssex" width="120" />
         <el-table-column align="left" label="年龄" prop="sage" width="120" />
+        <el-table-column align="left" label="出生日期" prop="sborn" width="240" />
         <el-table-column align="left" label="系别" prop="sdept" width="120" />
-        
-
         <el-table-column align="left" label="操作">
 
             <template #default="scope">
@@ -165,7 +164,7 @@
 
 
         </el-table>
-       
+
 
 
         <div class="gva-pagination">
@@ -187,20 +186,30 @@
 
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" :title="type==='create'?'添加':'修改'" destroy-on-close>
       <el-scrollbar height="500px">
-          <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
+          <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="120px">
             <el-form-item label="学号:"  prop="sno" >
               <el-input v-model="formData.sno" :clearable="true"  placeholder="请输入学号" />
             </el-form-item>
             <el-form-item label="姓名:"  prop="sname" >
               <el-input v-model="formData.sname" :clearable="true"  placeholder="请输入姓名" />
             </el-form-item>
-             <el-form-item label="性别:" prop="ssex"> 
-              <el-select v-model="formData.ssex" placeholder="请选择性别"> 
-              <el-option label="男" value="男"></el-option> <el-option label="女" value="女"></el-option> 
-              </el-select> 
+             <el-form-item label="性别:" prop="ssex">
+              <el-select v-model="formData.ssex" placeholder="请选择性别">
+              <el-option label="男" value="男"></el-option> <el-option label="女" value="女"></el-option>
+              </el-select>
               </el-form-item>
             <el-form-item label="年龄:"  prop="sage" >
               <el-input v-model.number="formData.sage" :clearable="true" placeholder="请输入年龄" />
+            </el-form-item>
+            <el-form-item label="出生日期:"  prop="sborn" >
+              <el-date-picker
+                  v-model="formData.sborn"
+                  type="date"
+                  placeholder="请选择出生日期"
+                  :disabled-date="disabledDate"
+                  :shortcuts="shortcuts"
+                  :size="large"
+                />
             </el-form-item>
             <el-form-item label="系别:"  prop="sdept" >
               <el-input v-model="formData.sdept" :clearable="true"  placeholder="请输入系别" />
@@ -230,6 +239,9 @@
                 <el-descriptions-item label="年龄">
                         {{ formData.sage }}
                 </el-descriptions-item>
+                  <el-descriptions-item label="出生日期">
+                    {{ formData.sborn}}
+                  </el-descriptions-item>
                 <el-descriptions-item label="系别">
                         {{ formData.sdept }}
                 </el-descriptions-item>
@@ -245,7 +257,7 @@
 
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {
   createStudent,
   deleteStudent,
@@ -265,6 +277,33 @@ import printJS from 'print-js'
 import * as echarts from 'echarts'
 // 我的函数
 // import stuchart from '@/view/mine/studentchart.vue'
+
+const shortcuts = [
+  {
+    text: 'Today',
+    value: new Date(),
+  },
+  {
+    text: 'Yesterday',
+    value: () => {
+      const date = new Date()
+      date.setTime(date.getTime() - 3600 * 1000 * 24)
+      return date
+    },
+  },
+  {
+    text: 'A week ago',
+    value: () => {
+      const date = new Date()
+      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+      return date
+    },
+  },
+]
+
+const disabledDate = (time: Date) => {
+  return time.getTime() > Date.now()
+}
 
 const main = ref() // 使用ref创建虚拟DOM引用，使用时用main.value
 
@@ -291,7 +330,7 @@ onMounted(
   }
 )
 
-  
+
 // function init() {
 const init = async() => {
 
@@ -304,7 +343,7 @@ const init = async() => {
 
 
   var myChart = echarts.init(main.value)
-  
+
   // 指定图表的配置项和数据
   var option = {
     title: {
@@ -315,7 +354,7 @@ const init = async() => {
       data: ['人数']
     },
     xAxis: {
-      data: ['计算机学院', '文学院', '体育学院', '音乐学院', '生物科学学院', '数学学院']
+      data: ['计算机学院', '文学院', '体育学院', '音乐学院', '生物科学学院']
       // data: jsj.value
     },
     yAxis: {},
@@ -323,7 +362,7 @@ const init = async() => {
       {
         name: '人数',
         type: 'bar',
-        data: [jsj.value,wx.value,4,5,6,9]
+        data: [jsj.value,wx.value,34,45,26]
       }
     ]
   }
@@ -332,6 +371,10 @@ const init = async() => {
 }
 
 const depart = [
+  {
+    value: '',
+    label: '全部(All)',
+  },
   {
     value: '计算机学院',
     label: '计算机学院',
@@ -380,9 +423,9 @@ const formData = ref({
         sname: '',
         ssex: '',
         sage: 0,
+        sborn: new Date(2000,1,1),
         sdept: '',
         })
-
 
 // 验证规则
 const rule = reactive({
@@ -632,6 +675,7 @@ const closeDetailShow = () => {
           sname: '',
           ssex: '',
           sage: 0,
+          sborn: new Date(2000,1,1),
           sdept: '',
           }
 }
@@ -651,6 +695,7 @@ const closeDialog = () => {
         sname: '',
         ssex: '',
         sage: 0,
+        sborn: new Date(2000,1,1),
         sdept: '',
         }
 }

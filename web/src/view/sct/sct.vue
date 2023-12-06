@@ -36,6 +36,11 @@
             </el-popover>
         </div>
         <el-table
+        stripe =true
+        border =true
+        size = 'large'
+        empty-text='No data'
+        highlight-current-row
         ref="multipleTable"
         style="width: 100%"
         tooltip-effect="dark"
@@ -47,7 +52,7 @@
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="学号" prop="sno" width="120" />
+        <el-table-column align="left" label="学号" prop="sno" width="140" />
         <el-table-column align="left" label="课程号" prop="cno" width="120" />
         <el-table-column align="left" label="课程名" prop="cname" width="120" />
         <el-table-column align="left" label="学分" prop="ccredit" width="120" />
@@ -138,6 +143,19 @@
         </el-descriptions>
       </el-scrollbar>
     </el-dialog>
+<br>
+<br>
+
+    <div  class="gva-search-box">
+      <div ref="main" style="width: 100%; height: 800px"></div>
+      <br>
+      <br>
+      <el-divider>
+      <el-icon><star-filled /></el-icon>
+      </el-divider>
+      <sctchart/>
+    </div>
+
   </div>
 </template>
 
@@ -154,12 +172,77 @@ import {
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 
 // 我的函数
 import { findCourse, updateCourse } from '@/api/course'
 
- 
+import * as echarts from 'echarts'
+import sctchart from '@/view/sct/sctchart.vue'
+const main = ref() // 使用ref创建虚拟DOM引用，使用时用main.value
+
+
+onMounted(
+  () => {
+    init()
+  }
+)
+
+const init = async() => {
+
+
+// 基于准备好的dom，初始化echarts实例
+
+var myChart = echarts.init(main.value)
+
+// 指定图表的配置项和数据
+
+var option = {
+  title: {
+      text: '各课程选课人数'
+    },
+  legend: {
+    top: 'bottom'
+  },
+  toolbox: {
+    show: false,
+    feature: {
+      mark: { show: true },
+      dataView: { show: true, readOnly: false },
+      restore: { show: true },
+      saveAsImage: { show: true }
+    }
+  },
+  series: [
+    {
+      name: '各课程选课情况',
+      type: 'pie',
+      radius: [50, 250],
+      center: ['50%', '50%'],
+      roseType: 'area',
+      itemStyle: {
+        borderRadius: 8
+      },
+      data: [
+        { value: 340, name: 'JAVA' },
+        { value: 238, name: 'C++' },
+        { value: 332, name: '大学物理' },
+        { value: 230, name: '高等数学' },
+        { value: 228, name: '线性代数' },
+        { value: 261, name: '马克思主义原理' },
+        { value: 224, name: '企业创新' },
+        { value: 280, name: 'Linux操作系统' }
+      ]
+    }
+  ]
+}
+
+// 使用刚指定的配置项和数据显示图表。
+  myChart.setOption(option)
+}
+
+
+
 defineOptions({
     name: 'Sct'
 })

@@ -22,7 +22,7 @@
       </el-form>
     </div>
     <div class="gva-table-box">
-        <div class="gva-btn-list">
+        <div  v-auth="btnAuth.Courseoperate" class="gva-btn-list">
             <el-button type="primary" icon="plus" @click="openDialog">新增</el-button>
             <el-popover v-model:visible="deleteVisible" :disabled="!multipleSelection.length" placement="top" width="160">
             <p>确定要删除吗？</p>
@@ -36,6 +36,11 @@
             </el-popover>
         </div>
         <el-table
+        stripe =true
+        border =true
+        size = 'large'
+        empty-text='No data'
+        highlight-current-row
         ref="multipleTable"
         style="width: 100%"
         tooltip-effect="dark"
@@ -52,7 +57,7 @@
         <el-table-column align="left" label="先行课编号" prop="cpno" width="120" />
         <el-table-column align="left" label="学分" prop="ccredit" width="120" />
         <el-table-column align="left" label="教工号" prop="ctno" width="120" />
-        <el-table-column align="left" label="上课地点" prop="cplace" width="120" />
+        <el-table-column align="left" label="上课地点、时间" prop="cplace" width="240" />
         <el-table-column align="left" label="最大选课人数" prop="cmax" width="120" />
         <el-table-column align="left" label="已选人数" prop="cremain" width="120" />
         <el-table-column align="left" label="操作">
@@ -61,8 +66,8 @@
                 <el-icon style="margin-right: 5px"><InfoFilled /></el-icon>
                 查看详情
             </el-button>
-            <el-button type="primary" link icon="edit" class="table-button" @click="updateCourseFunc(scope.row)">变更</el-button>
-            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
+            <el-button v-auth="btnAuth.Courseoperate" type="primary" link icon="edit" class="table-button" @click="updateCourseFunc(scope.row)" >变更</el-button>
+            <el-button v-auth="btnAuth.Courseoperate" type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
             <el-button color="#008000" plain :dark="isDark"  :disabled="isDisabled" @click="isSelect(scope.row)">选课</el-button>
             <el-button color="#FF0000" plain :dark="isDark"   @click="isDeselect(scope.row)">退选</el-button>
             </template>
@@ -90,7 +95,7 @@
 
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" :title="type==='create'?'添加':'修改'" destroy-on-close>
       <el-scrollbar height="500px">
-          <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
+          <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="120px">
             <el-form-item label="课程号:"  prop="cno" >
               <el-input v-model="formData.cno" :clearable="true"  placeholder="请输入课程号" />
             </el-form-item>
@@ -106,8 +111,8 @@
             <el-form-item label="教工号:"  prop="ctno" >
               <el-input v-model="formData.ctno" :clearable="true"  placeholder="请输入教工号" />
             </el-form-item>
-            <el-form-item label="上课地点:"  prop="cplace" >
-              <el-input v-model="formData.cplace" :clearable="true"  placeholder="请输入上课地点" />
+            <el-form-item label="上课地点、时间:"  prop="cplace" >
+              <el-input v-model="formData.cplace" :clearable="true"  placeholder="请输入上课地点、时间" />
             </el-form-item>
             <el-form-item label="最大选课人数:"  prop="cmax" >
               <el-input v-model.number="formData.cmax" :clearable="true" placeholder="请输入最大选课人数" />
@@ -143,7 +148,7 @@
                 <el-descriptions-item label="教工号">
                         {{ formData.ctno }}
                 </el-descriptions-item>
-                <el-descriptions-item label="上课地点">
+                <el-descriptions-item label="上课地点、时间">
                         {{ formData.cplace }}
                 </el-descriptions-item>
                 <el-descriptions-item label="最大选课人数">
@@ -173,6 +178,8 @@ import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDow
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
 
+import { useBtnAuth } from '@/utils/btnAuth'
+const btnAuth = useBtnAuth()
 
 
 defineOptions({
@@ -188,7 +195,7 @@ const formData = ref({
         ctno: '',
         cplace: '',
         cmax: 0,
-        cremain: 0,
+        cremain: 0
         })
 
 
@@ -515,15 +522,23 @@ const isDeselect = (row) => {
 
 
 const Deselect = async(row) => {
-  const res = await findCourse({ ID: row.ID })
-    const table = await getSctListBySnoAndCno({ page: page.value, pageSize: pageSize.value, sno: stuSno.value, cno: row.cno })
-    if (table.code === 0) {
+  const table = await getSctListBySnoAndCno({ page: page.value, pageSize: pageSize.value, sno: stuSno.value, cno: row.cno })
+  if(table.data.list.length === 0) {
+      ElMessage({
+    showClose: true,
+    message: '你还没选择该课程！',
+    type: 'error',
+  })
+    return
+    }
+    if (table.code === 0 && row.cremain > 0) {
       searchData.value = table.data.list
       const json = JSON.stringify(table.data.list)
       const arr = JSON.parse(json)
       var id = arr[0].ID
       deleteSct({ ID: id })
-    
+
+  const res = await findCourse({ ID: row.ID })
     formData.value = res.data.recourse
           formData.value.cremain -= 1
           updateCourse(formData.value)
@@ -533,13 +548,16 @@ const Deselect = async(row) => {
         message: '退选成功！',
         type: 'success',
       })
-    } else {
+    }
+
+    else {
       ElMessage({
     showClose: true,
-    message: '退选失败！',
+    message: '当前状态无法退选！',
     type: 'error',
   })
-}
+  return
+    }
 }
 
 getTableData()
@@ -585,7 +603,7 @@ const optCourse = async(row) => {
                 type: 'success',
                 message: '选课成功'
             })
-          isDisabled = true
+          // isDisabled = true
           formData.value = res.data.recourse
           formData.value.cremain += 1
           updateCourse(formData.value)
@@ -594,7 +612,7 @@ const optCourse = async(row) => {
   }
   // console.log(res.data.recourse.cname)
 }
-
+getTableData()
 </script>
 
 <style>

@@ -5,14 +5,20 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/InfoQuire"
 	InfoQuireReq "github.com/flipped-aurora/gin-vue-admin/server/model/InfoQuire/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"sync"
 )
 
 type SctService struct {
+	lock sync.Mutex // 在CourseService结构体中定义一个互斥锁
 }
 
 // CreateSct 创建选课表记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (sctService *SctService) CreateSct(sct *InfoQuire.Sct) (err error) {
+
+	sctService.lock.Lock()
+	defer sctService.lock.Unlock() // 在函数结束时释放锁
+
 	err = global.GVA_DB.Create(sct).Error
 	return err
 }
@@ -20,6 +26,9 @@ func (sctService *SctService) CreateSct(sct *InfoQuire.Sct) (err error) {
 // DeleteSct 删除选课表记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (sctService *SctService) DeleteSct(sct InfoQuire.Sct) (err error) {
+	sctService.lock.Lock()
+	defer sctService.lock.Unlock() // 在函数结束时释放锁
+
 	err = global.GVA_DB.Unscoped().Delete(&sct).Error
 	return err
 }
@@ -27,6 +36,9 @@ func (sctService *SctService) DeleteSct(sct InfoQuire.Sct) (err error) {
 // DeleteSctByIds 批量删除选课表记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (sctService *SctService) DeleteSctByIds(ids request.IdsReq) (err error) {
+
+	sctService.lock.Lock()
+	defer sctService.lock.Unlock() // 在函数结束时释放锁
 	err = global.GVA_DB.Unscoped().Delete(&[]InfoQuire.Sct{}, "id in ?", ids.Ids).Error
 	return err
 }
@@ -34,6 +46,9 @@ func (sctService *SctService) DeleteSctByIds(ids request.IdsReq) (err error) {
 // UpdateSct 更新选课表记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (sctService *SctService) UpdateSct(sct InfoQuire.Sct) (err error) {
+
+	sctService.lock.Lock()
+	defer sctService.lock.Unlock() // 在函数结束时释放锁
 	err = global.GVA_DB.Save(&sct).Error
 	return err
 }
@@ -41,6 +56,7 @@ func (sctService *SctService) UpdateSct(sct InfoQuire.Sct) (err error) {
 // GetSct 根据id获取选课表记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (sctService *SctService) GetSct(id uint) (sct InfoQuire.Sct, err error) {
+
 	err = global.GVA_DB.Where("id = ?", id).First(&sct).Error
 	return
 }

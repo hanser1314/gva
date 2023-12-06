@@ -31,7 +31,7 @@
                   <el-icon class="el-input__icon"><search /></el-icon>
                 </template>
               </el-input>
-     
+
         </el-form-item>
 
         <el-form-item>
@@ -45,9 +45,9 @@
                   <el-icon class="el-input__icon"><search /></el-icon>
                 </template>
               </el-input>
-     
+
         </el-form-item>
-       
+
 
         <el-form-item>
           <el-button type="primary" icon="search" @click="handleQuery">查询2</el-button>
@@ -81,8 +81,9 @@
         <el-table
         stripe =true
         border =true
-        size = large
-        empty-text
+        size = 'large'
+        empty-text='No data'
+        highlight-current-row
         ref="multipleTable"
         style="width: 100%"
         tooltip-effect="dark"
@@ -137,7 +138,7 @@
 
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" :title="type==='create'?'添加':'修改'" destroy-on-close>
       <el-scrollbar height="500px">
-          <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
+          <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="120px">
             <el-form-item label="教工号:"  prop="tno" >
               <el-input v-model="formData.tno" :clearable="true"  placeholder="请输入教工号" />
             </el-form-item>
@@ -219,8 +220,26 @@
         </el-descriptions>
       </el-scrollbar>
     </el-dialog>
+
+
+    <br>
+    <br>
+    <div class="gva-search-box">
+
+      <div ref="main" style="width: 100%; height: 400px"></div>
+      <br>
+      <br>
+      <el-divider>
+      <el-icon><star-filled /></el-icon>
+      </el-divider>
+       <tchart/>
+
+    </div>
+
   </div>
 </template>
+
+
 
 <script setup>
 import {
@@ -236,8 +255,103 @@ import {
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ref, reactive } from 'vue'
+import { ref, reactive,onMounted } from 'vue'
 import printJS from 'print-js'
+
+import * as echarts from 'echarts'
+import tchart from '@/view/teacher/tchart.vue'
+const main = ref() // 使用ref创建虚拟DOM引用，使用时用main.value
+
+
+onMounted(
+  () => {
+    init()
+  }
+)
+
+const init = async() => {
+
+
+// 基于准备好的dom，初始化echarts实例
+
+var myChart = echarts.init(main.value)
+
+// 指定图表的配置项和数据
+
+var option = {
+  title: {
+    text: '教师学历分布情况'
+  },
+  angleAxis: {
+    type: 'category',
+    data: ['博士','硕士','学士']
+  },
+  radiusAxis: {},
+  polar: {},
+  series: [
+    {
+      type: 'bar',
+      data: [5, 17, 23],
+      coordinateSystem: 'polar',
+      name: '计算机学院',
+      stack: 'a',
+      emphasis: {
+        focus: 'series'
+      }
+    },
+    {
+      type: 'bar',
+      data: [4, 19, 26],
+      coordinateSystem: 'polar',
+      name: '文学院',
+      stack: 'a',
+      emphasis: {
+        focus: 'series'
+      }
+    },
+    {
+      type: 'bar',
+      data: [5, 12, 13],
+      coordinateSystem: 'polar',
+      name: '音乐学院',
+      stack: 'a',
+      emphasis: {
+        focus: 'series'
+      }
+    },
+    {
+      type: 'bar',
+      data: [3, 22, 25],
+      coordinateSystem: 'polar',
+      name: '体育学院',
+      stack: 'a',
+      emphasis: {
+        focus: 'series'
+      }
+    },
+    {
+      type: 'bar',
+      data: [ 13, 14, 31],
+      coordinateSystem: 'polar',
+      name: '生物科学学院',
+      stack: 'a',
+      emphasis: {
+        focus: 'series'
+      }
+    }
+
+  ],
+
+  legend: {
+    show: true,
+    data: ['计算机学院', '文学院', '音乐学院', '体育学院', '生物科学学院']
+  }
+}
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option)
+}
+
 
 defineOptions({
     name: 'Teacher'

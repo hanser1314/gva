@@ -22,7 +22,7 @@
         </el-form>
       </div>
       <div class="gva-table-box">
-          <div class="gva-btn-list">
+          <div  v-auth="btnAuth.Courseoperate" class="gva-btn-list">
               <el-button type="primary" icon="plus" @click="openDialog">新增</el-button>
               <el-popover v-model:visible="deleteVisible" :disabled="!multipleSelection.length" placement="top" width="160">
               <p>确定要删除吗？</p>
@@ -52,7 +52,7 @@
           <el-table-column align="left" label="课程名" prop="cname" width="120" />
           <el-table-column align="left" label="学分" prop="ccredit" width="120" />
           <el-table-column align="left" label="教工号" prop="tno" width="120" />
-          <el-table-column align="left" label="上课地点" prop="cplace" width="120" />
+          <el-table-column align="left" label="上课地点、时间" prop="cplace" width="240" />
           <el-table-column align="left" label="成绩" prop="grade" width="120" />
           <el-table-column align="left" label="操作">
               <template #default="scope">
@@ -79,7 +79,7 @@
       </div>
       <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" :title="type==='create'?'添加':'修改'" destroy-on-close>
         <el-scrollbar height="500px">
-            <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
+            <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="120px">
               <el-form-item label="学号:"  prop="sno" >
                 <el-input v-model="formData.sno" :clearable="true"  placeholder="请输入学号" disabled/>
               </el-form-item>
@@ -95,11 +95,11 @@
               <el-form-item label="教工号:"  prop="tno" >
                 <el-input v-model="formData.tno" :clearable="true"  placeholder="请输入教工号" disabled/>
               </el-form-item>
-              <el-form-item label="上课地点:"  prop="cplace" >
-                <el-input v-model="formData.cplace" :clearable="true"  placeholder="请输入上课地点" disabled/>
+              <el-form-item label="上课地点、时间:"  prop="cplace" >
+                <el-input v-model="formData.cplace" :clearable="true"  placeholder="请输入上课地点、时间" disabled/>
               </el-form-item>
               <el-form-item label="成绩:"  prop="grade" >
-                <el-input v-model="formData.grade" :clearable="true"  placeholder="请输入成绩" />
+                <el-input v-model.number="formData.grade" :clearable="true"  placeholder="请输入成绩" />
               </el-form-item>
             </el-form>
         </el-scrollbar>
@@ -110,7 +110,7 @@
           </div>
         </template>
       </el-dialog>
-  
+
       <el-dialog v-model="detailShow" style="width: 800px" lock-scroll :before-close="closeDetailShow" title="查看详情" destroy-on-close>
         <el-scrollbar height="550px">
           <el-descriptions column="1" border>
@@ -129,7 +129,7 @@
                   <el-descriptions-item label="教工号">
                           {{ formData.tno }}
                   </el-descriptions-item>
-                  <el-descriptions-item label="上课地点">
+                  <el-descriptions-item label="上课地点、时间">
                           {{ formData.cplace }}
                   </el-descriptions-item>
                   <el-descriptions-item label="成绩">
@@ -140,7 +140,7 @@
       </el-dialog>
     </div>
   </template>
-  
+
   <script setup>
   import {
     createSct,
@@ -151,30 +151,33 @@
     getSctList,
     getSctListByTno
   } from '@/api/sct'
-  
-  // 全量引入格式化工具 请按需保留
-  import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
-  import { ElMessage, ElMessageBox } from 'element-plus'
-  import { ref, reactive } from 'vue'
-  
-  // 我的函数
-  import { findCourse, updateCourse } from '@/api/course'
+
+// 全量引入格式化工具 请按需保留
+import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { ref, reactive } from 'vue'
+
+// 我的函数
+import { findCourse, updateCourse } from '@/api/course'
 
 import { useUserStore } from '@/pinia/modules/user'
+
+import { useBtnAuth } from '@/utils/btnAuth'
+const btnAuth = useBtnAuth()
 
 const username = ref('')
 const userStore = useUserStore()
 username.value = userStore.userInfo.userName
-  
+
   // var courseID = inject('courseID')
 //   const test = (row) =>{
 //     alert(row.ID)
 //   }
-   
+
   defineOptions({
       name: 'Sct'
   })
-  
+
   // 自动化生成的字典（可能为空）以及字段
   const formData = ref({
           sno: '',
@@ -185,7 +188,7 @@ username.value = userStore.userInfo.userName
           cplace: '',
           grade: 0,
           })
-  
+
   const CourseFormData = ref({
           cno: '',
           cname: '',
@@ -196,11 +199,11 @@ username.value = userStore.userInfo.userName
           cmax: 0,
           cremain: 0
   })
-  
+
   // 验证规则
   const rule = reactive({
   })
-  
+
   const searchRule = reactive({
     createdAt: [
       { validator: (rule, value, callback) => {
@@ -216,23 +219,23 @@ username.value = userStore.userInfo.userName
       }, trigger: 'change' }
     ],
   })
-  
+
   const elFormRef = ref()
   const elSearchFormRef = ref()
-  
+
   // =========== 表格控制部分 ===========
   const page = ref(1)
   const total = ref(0)
   const pageSize = ref(10)
   const tableData = ref([])
   const searchInfo = ref({})
-  
+
   // 重置
   const onReset = () => {
     searchInfo.value = {}
     getTableData()
   }
-  
+
   // 搜索
   const onSubmit = () => {
     elSearchFormRef.value?.validate(async(valid) => {
@@ -242,19 +245,19 @@ username.value = userStore.userInfo.userName
       getTableData()
     })
   }
-  
+
   // 分页
   const handleSizeChange = (val) => {
     pageSize.value = val
     getTableData()
   }
-  
+
   // 修改页面容量
   const handleCurrentChange = (val) => {
     page.value = val
     getTableData()
   }
-  
+
   // 查询
   const getTableData = async() => {
     const table = await getSctListByTno({ page: page.value, pageSize: pageSize.value, tno: username.value })
@@ -267,22 +270,22 @@ username.value = userStore.userInfo.userName
   }
   getTableData()
   // ============== 表格控制部分结束 ===============
-  
+
   // 获取需要的字典 可能为空 按需保留
   const setOptions = async () =>{
   }
-  
+
   // 获取需要的字典 可能为空 按需保留
   setOptions()
-  
-  
+
+
   // 多选数据
   const multipleSelection = ref([])
   // 多选
   const handleSelectionChange = (val) => {
       multipleSelection.value = val
   }
-  
+
   // 删除行
   const deleteRow = (row) => {
       ElMessageBox.confirm('确定要删除吗?', '提示', {
@@ -293,11 +296,11 @@ username.value = userStore.userInfo.userName
               deleteSctFunc(row)
           })
       }
-  
-  
+
+
   // 批量删除控制标记
   const deleteVisible = ref(false)
-  
+
   // 多选删除
   const onDelete = async() => {
         const ids = []
@@ -325,10 +328,10 @@ username.value = userStore.userInfo.userName
           getTableData()
         }
       }
-  
+
   // 行为控制标记（弹窗内部需要增还是改）
   const type = ref('')
-  
+
   // 更新行
   const updateSctFunc = async(row) => {
       const res = await findSct({ ID: row.ID })
@@ -338,8 +341,8 @@ username.value = userStore.userInfo.userName
           dialogFormVisible.value = true
       }
   }
-  
-  
+
+
   // 删除行
   const deleteSctFunc = async(row) => {
       // const info = await findCourse({ ID: courseID })
@@ -358,21 +361,21 @@ username.value = userStore.userInfo.userName
           getTableData()
       }
   }
-  
+
   // 弹窗控制标记
   const dialogFormVisible = ref(false)
-  
-  
+
+
   // 查看详情控制标记
   const detailShow = ref(false)
-  
-  
+
+
   // 打开详情弹窗
   const openDetailShow = () => {
     detailShow.value = true
   }
-  
-  
+
+
   // 打开详情
   const getDetails = async (row) => {
     // 打开弹窗
@@ -382,8 +385,8 @@ username.value = userStore.userInfo.userName
       openDetailShow()
     }
   }
-  
-  
+
+
   // 关闭详情弹窗
   const closeDetailShow = () => {
     detailShow.value = false
@@ -397,14 +400,14 @@ username.value = userStore.userInfo.userName
             grade: 0,
             }
   }
-  
-  
+
+
   // 打开弹窗
   const openDialog = () => {
       type.value = 'create'
       dialogFormVisible.value = true
   }
-  
+
   // 关闭弹窗
   const closeDialog = () => {
       dialogFormVisible.value = false
@@ -444,10 +447,9 @@ username.value = userStore.userInfo.userName
                 }
         })
   }
-  
+
   </script>
-  
+
   <style>
-  
+
   </style>
-  

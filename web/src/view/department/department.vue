@@ -36,6 +36,11 @@
             </el-popover>
         </div>
         <el-table
+        stripe =true
+        border =true
+        size = 'large'
+        empty-text='No data'
+        highlight-current-row
         ref="multipleTable"
         style="width: 100%"
         tooltip-effect="dark"

@@ -174,15 +174,16 @@
                     tooltip-effect="dark"
                     row-key="ID"
                     highlight-current-row="true"
-                    style="width: 90%;"
+                    style="width: 80%;"
                     >
-                    <el-table-column align="left" label="学号" prop="sno" width="200"/>
+                    <el-table-column align="left" label="学号" prop="sno" width="180"/>
                     <el-table-column align="left" label="姓名" prop="sname" width="120"/>
                     <el-table-column align="left" label="性别" prop="ssex" width="120"/>
                     <el-table-column align="left" label="年龄" prop="sage" width="120"/>
-                    <el-table-column align="left" label="系别" prop="sdept" width="200"/>
+                    <el-table-column align="left" label="出生日期" prop="sborn" width="240"/>
+                    <el-table-column align="left" label="系别" prop="sdept" width="198"/>
                   </el-table>
-                
+
                   </p>
                   <el-divider>
                       <el-icon><star-filled /></el-icon>
@@ -277,7 +278,7 @@
               v-model="phoneForm.code"
               class="flex-1"
               autocomplete="off"
-              placeholder="请自行设计短信服务，此处为模拟随便写"
+              placeholder="此处为模拟随便写"
               style="width:300px"
             />
             <el-button
@@ -377,7 +378,6 @@ const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
 
-
 stuSno.value = userStore.userInfo.userName
 
 // var json = '[ { "ID": 20, "CreatedAt": "2023-11-27T17:16:39.481+08:00", "UpdatedAt": "2023-11-27T17:16:39.481+08:00", "sno": "202124111120", "sname": "邱家华", "ssex": "男", "sage": 22, "sdept": "计算机学院" } ]';
@@ -385,13 +385,13 @@ stuSno.value = userStore.userInfo.userName
 const getTableData = async() => {
   const table = await getStudentBySno({ sno: stuSno.value })
   if (table.code === 0) {
-    // tableData.value = table.data.list
+    tableData.value = table.data.list
     // total.value = table.data.total
     // page.value = table.data.page
     // pageSize.value = table.data.pageSize
-    const json = JSON.stringify(table.data.list)
-    const arr = JSON.parse(json)
-    stuName.value = arr[0].sname
+    // const json = JSON.stringify(table.data.list)
+    // const arr = JSON.parse(json)
+    // stuName.value = arr[0].sname
   }
 }
 
